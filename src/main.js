@@ -1,41 +1,48 @@
-function fizzBuzz(number) {
-    if (number % 3 === 0 && number % 5 === 0) {
-        console.log("FizzBuzz");
-    } else if (number % 3 === 0) {
-        console.log("Fizz");
-    } else if (number % 5 === 0) {
-        console.log("Buzz");
-    } else {
-        console.log(number);
+function isPrime(number) {
+    if (number <= 1) {
+        console.log(`Число ${number} не є простим числом.`);
+        return;
+    }
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            console.log(`Число ${number} не є простим числом.`);
+            return;
+        }
+    }
+    console.log(`Число ${number} є простим числом.`);
+}
+isPrime(2);  // Виведе "Число 2 є простим числом."
+isPrime(4);  // Виведе "Число 4 не є простим числом."
+isPrime(17); // Виведе "Число 17 є простим числом."
+isPrime(1);  // Виведе "Число 1 не є простим числом."
+
+function findPerfectNumbers(n) {
+    for (let num = 1; num <= n; num++) {
+        let sum = 0;
+        for (let i = 1; i <= num / 2; i++) {
+            if (num % i === 0) {
+                sum += i;
+            }
+        }
+        if (sum === num) {
+            console.log(`Число ${num} є досконалим числом.`);
+        }
     }
 }
-fizzBuzz(15); // Виведе "FizzBuzz"
-fizzBuzz(9);  // Виведе "Fizz"
-fizzBuzz(10); // Виведе "Buzz"
-fizzBuzz(7);  // Виведе 7
+findPerfectNumbers(10000); // Виведе всі досконалі числа в діапазоні до 10 000
 
-function isLeapYear(year) {
-    if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
-        console.log(`${year} є високосним роком.`);
-    } else {
-        console.log(`${year} не є високосним роком.`);
+function drawTree(height) {
+    let tree = '';
+    for (let i = 1; i <= height; i++) {
+        let spaces = ' '.repeat(height - i);
+        let stars = '*'.repeat(2 * i - 1);
+        tree += spaces + stars + '\n';
     }
+    console.log(tree);
 }
-isLeapYear(2024); // Виведе "2024 є високосним роком."
-isLeapYear(1900); // Виведе "1900 не є високосним роком."
-isLeapYear(2000); // Виведе "2000 є високосним роком."
-
-
-function printYearsMessage(age) {
-    if (age % 10 === 1 && age % 100 !== 11) {
-        console.log(`Вам ${age} рік`);
-    } else if ([2, 3, 4].includes(age % 10) && ![12, 13, 14].includes(age % 100)) {
-        console.log(`Вам ${age} роки`);
-    } else {
-        console.log(`Вам ${age} років`);
-    }
-}
-printYearsMessage(1);   // Виведе "Вам 1 рік"
-printYearsMessage(23);  // Виведе "Вам 23 роки"
-printYearsMessage(45);  // Виведе "Вам 45 років"
-printYearsMessage(111); // Виведе "Вам 111 років"
+drawTree(4);
+// Виведе:
+//    *
+//   ***
+//  *****
+// *******
