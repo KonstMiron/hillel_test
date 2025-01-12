@@ -1,48 +1,22 @@
-function isPrime(number) {
-    if (number <= 1) {
-        console.log(`Число ${number} не є простим числом.`);
-        return;
-    }
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            console.log(`Число ${number} не є простим числом.`);
-            return;
-        }
-    }
-    console.log(`Число ${number} є простим числом.`);
+function reverseString(str) {
+    return str.split('').reverse().join('');
 }
-isPrime(2);  // Виведе "Число 2 є простим числом."
-isPrime(4);  // Виведе "Число 4 не є простим числом."
-isPrime(17); // Виведе "Число 17 є простим числом."
-isPrime(1);  // Виведе "Число 1 не є простим числом."
 
-function findPerfectNumbers(n) {
-    for (let num = 1; num <= n; num++) {
-        let sum = 0;
-        for (let i = 1; i <= num / 2; i++) {
-            if (num % i === 0) {
-                sum += i;
-            }
-        }
-        if (sum === num) {
-            console.log(`Число ${num} є досконалим числом.`);
-        }
-    }
+function isPalindrome(str) {
+    const reversedStr = reverseString(str);
+    return str === reversedStr;
 }
-findPerfectNumbers(10000); // Виведе всі досконалі числа в діапазоні до 10 000
 
-function drawTree(height) {
-    let tree = '';
-    for (let i = 1; i <= height; i++) {
-        let spaces = ' '.repeat(height - i);
-        let stars = '*'.repeat(2 * i - 1);
-        tree += spaces + stars + '\n';
+function findGCD(a, b) {
+    while (b !== 0) {
+        let temp = b;
+        b = a % b;
+        a = temp;
     }
-    console.log(tree);
+    return a;
 }
-drawTree(4);
-// Виведе:
-//    *
-//   ***
-//  *****
-// *******
+
+console.log(reverseString("hello")); // "olleh"
+console.log(isPalindrome("radar")); // true
+console.log(isPalindrome("hello")); // false
+console.log(findGCD(48, 18)); // 6
