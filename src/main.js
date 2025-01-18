@@ -1,56 +1,30 @@
-//Домашка 5
-function reverseString(str) {
-    return str.split('').reverse().join('');
+// Homework 7
+//Zadanie 1
+function reverseArray(array) {
+    return array.slice().reverse();
 }
+const originalArray = [1, 2, 3, 4, 5];
+const reversedArray = reverseArray(originalArray);
 
-function isPalindrome(str) {
-    const reversedStr = reverseString(str);
-    return str === reversedStr;
+console.log(reversedArray); // [5, 4, 3, 2, 1]
+//Zadanie 2
+function uniqueValues(array1, array2) {
+    return Array.from(new Set([...array1, ...array2]));
 }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+const uniqueValuesArray = uniqueValues(array1, array2);
 
-function findGCD(a, b) {
-    while (b !== 0) {
-        let temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
+console.log(uniqueValuesArray); // [1, 2, 3, 4, 5, 6, 7]
+// Zadanie 3
+function calculateAverageGrade(students) {
+    const totalGrade = students.reduce((sum, student) => sum + student.grade, 0);
+    return Math.round((totalGrade / students.length) * 10) / 10;
 }
+const students = [
+    { name: "Alice", age: 20, grade: 4.5 },
+    { name: "Bob", age: 21, grade: 3.9 },
+    { name: "Charlie", age: 19, grade: 4.8 }
+];
 
-console.log(reverseString("hello")); // "olleh"
-console.log(isPalindrome("radar")); // true
-console.log(isPalindrome("hello")); // false
-console.log(findGCD(48, 18)); // 6
-
-
-//Домашка 6
-function doubleLetter(str) {
-    return str.split('').map(char => char + char).join('');
-}
-function padString(str, length, symbol, toLeft = false) {
-    if (str.length >= length) return str;
-
-    const padding = symbol.repeat(length - str.length);
-
-    return toLeft ? padding + str : str + padding;
-}
-function camelCase(str, separator = ' ') {
-    return str
-        .split(separator)
-        .map((word, index) => 
-            index === 0 
-                ? word.toLowerCase() 
-                : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join('');
-}
-
-// Тести
-
-console.log(doubleLetter("hello")); // "hheelllloo"
-console.log(padString('Ivan', 6, '*'));         // 'Ivan**'
-console.log(padString('Ivan', 6, '*', true));  // '**Ivan'
-console.log(padString('Ivan', 3, '*'));        // 'Ivan' (без змін)
-console.log(camelCase('hello world', ' '));         // 'helloWorld'
-console.log(camelCase('javascript-is-awesome', '-')); // 'javascriptIsAwesome'
-console.log(camelCase('make_it_work', '_'));         // 'makeItWork'
+console.log(calculateAverageGrade(students)); // 4.4
