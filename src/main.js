@@ -1,97 +1,92 @@
-// Homework 8
-//Zadanie 1
-function capitalizeStrings(strings) {
-    return strings.map(str => {
-      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    });
+//Homework 10
+//Zad 1
+class Notifications {
+  constructor(data) {
+    this.notifications = data;
   }
-  
-  const words = ["apple", "banaNA", "kiWi", "ORANGE"];
-  console.log(capitalizeStrings(words)); // ["Apple", "Banana", "Kiwi", "Orange"]
-//Zadanie 2
-function findCommonElements(arr1, arr2) {
-    return arr1.filter(element => arr2.includes(element));
-  }
-  
-  const array1 = [1, 2, 3, 4, 5];
-  const array2 = [3, 4, 5, 6, 7];
-  
-  console.log(findCommonElements(array1, array2)); // [3, 4, 5]
-// Zadanie 3
-function analyzeArray(numbers) {
-    const sum = numbers.reduce((acc, num) => acc + num, 0);
-    const average = sum / numbers.length;
-    const min = Math.min(...numbers);
-    const max = Math.max(...numbers);
-  
+
+  [Symbol.iterator]() {
+    const allItems = [];
+    for (const key in this.notifications) {
+      if (Array.isArray(this.notifications[key])) {
+        allItems.push(...this.notifications[key]);
+      }
+    }
+    let index = 0;
     return {
-      sum,
-      average,
-      min,
-      max
+      next: () => {
+        if (index < allItems.length) {
+          return { value: allItems[index++], done: false };
+        } else {
+          return { done: true };
+        }
+      }
     };
   }
-  
-  const numbers = [1, 2, 3, 4, 5];
-  console.log(analyzeArray(numbers)); // { sum: 15, average: 3, min: 1, max: 5 }
+}
 
-  // Homework 9
-  // Zadanie 1
-  function isPrime(num) {
-    if (num < 2) return false;
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-      if (num % i === 0) return false;
+const data = {
+  messages: ["Новий коментар", "Відповідь на ваш пост"],
+  alerts: ["Системне оновлення", "Попередження про безпеку"],
+  updates: ["Новий розділ у курсі", "Змінено розклад занять"]
+};
+
+const notifications = new Notifications(data);
+
+for (const notification of notifications) {
+  console.log(notification);
+}
+//Zad 2
+function sqr(x, cache) {
+    if (cache.has(x)) {
+        return cache.get(x);
     }
-    return true;
-  }
-  
-  function filterPrimes(numberss) {
-    return numberss.filter(isPrime);
-  }
-  
-  const numberss = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-  console.log(filterPrimes(numberss)); // [2, 3, 5, 7, 11]
+    const square = x * x;
+    cache.set(x, square);
+    return square;
+}
 
-// Zadanie 2
-function groupNotificationsBySource(notifications) {
-    return notifications.reduce((acc, notification) => {
-      const { source, ...rest } = notification;
-      if (!acc[source]) {
-        acc[source] = [];
-      }
-      acc[source].push(rest);
-      return acc;
-    }, {});
-  }
-  
-  const notifications = [
-    { source: "email", text: "New message", date: "2025-01-01" },
-    { source: "sms", text: "Your code is 1234", date: "2025-01-02" },
-    { source: "email", text: "Newsletter", date: "2025-01-03" },
-  ];
-  
-  console.log(groupNotificationsBySource(notifications));
-  // {
-  //   email: [{ text: "New message", date: "2025-01-01" }, { text: "Newsletter", date: "2025-01-03" }],
-  //   sms: [{ text: "Your code is 1234", date: "2025-01-02" }]
-  // }
+const cache = new Map();
+console.log(sqr(4, cache));
+console.log(sqr(4, cache)); 
+console.log(sqr(5, cache)); 
+// Homework 11
+//Zad 1
+function logArguments(fn) {
+    return function(...args) {
+      console.log("Arguments:", args);
+        return fn(...args);
+    };
+}
 
-  // Zadanie 3
-  function group(array, groupingFunction) {
-    return array.reduce((acc, item) => {
-      const key = groupingFunction(item);
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(item);
-      return acc;
-    }, {});
-  }
-  
-  const data = [6.1, 4.2, 6.3];
-  console.log(group(data, Math.floor)); 
-  // { 6: [6.1, 6.3], 4: [4.2] }
-  
-  const wordss = ["one", "two", "three"];
-  console.log(group(wordss, word => word.length)); 
-  // { 3: ["one", "two"], 5: ["three"] }
+function add(a, b) {
+    return a + b;
+}
+const loggedAdd = logArguments(add);
+console.log(loggedAdd(3, 5));
+
+function greet(name, age) {
+    return `Hello, my name is ${name} and I am ${age} years old.`;
+};
+
+const loggedGreet = logArguments(greet);
+console.log(loggedGreet("Kostiantyn", 20));
+//Zad 2
+function validate(sum, validator) {
+    return function(...args) {
+        if (!args.every(validator)) {
+            throw new Error("Validation failed: some arguments do not meet the criteria.");
+        }
+        return sum(...args);
+    };
+}
+
+function add(a, b) {
+    return a + b;
+}
+
+const isPositive = (num) => num > 0;
+const validatedAdd = validate(add, isPositive);
+
+console.log(validatedAdd(3, 5)); 
+console.log(validatedAdd(-1, 5));
