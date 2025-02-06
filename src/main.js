@@ -1,92 +1,79 @@
-//Homework 10
-//Zad 1
-class Notifications {
-  constructor(data) {
-    this.notifications = data;
+// Homework 12
+// Zad1
+function summarize(num) {
+  return function(value = 1) {
+      return num + value;
+  };
+}
+const addFive = summarize(5);
+console.log(addFive(3));
+console.log(addFive()); 
+
+// Zad2
+function counter(startValue, step) {
+  let current = startValue;
+  
+  function count() {
+      current += step;
+      return current;
+  }
+  
+  count.increment = function() {
+      current += step;
+      return current;
+  };
+  
+  count.decrement = function() {
+      current -= step;
+      return current;
+  };
+  
+  count.reset = function() {
+      current = startValue;
+      return current;
+  };
+  
+  return count;
+}
+
+const myCounter = counter(10, 2);
+console.log(myCounter());  
+console.log(myCounter.increment()); 
+console.log(myCounter.decrement()); 
+console.log(myCounter.reset()); 
+
+
+// Homework 13
+// Zad1
+function fibonacci(n) {
+  if (n < 0) {
+      throw new Error("n має бути невід'ємним числом");
+  }
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+
+console.log(fibonacci(6));
+console.log(fibonacci(10)); 
+
+// Zad3
+function permute(arr) {
+  if (arr.length === 0) return [[]]; 
+  let result = [];
+
+  for (let i = 0; i < arr.length; i++) {
+      let current = arr[i];
+      let remaining = arr.slice(0, i).concat(arr.slice(i + 1));
+      let subPermutations = permute(remaining);
+
+      for (let perm of subPermutations) {
+          result.push([current, ...perm]);
+      }
   }
 
-  [Symbol.iterator]() {
-    const allItems = [];
-    for (const key in this.notifications) {
-      if (Array.isArray(this.notifications[key])) {
-        allItems.push(...this.notifications[key]);
-      }
-    }
-    let index = 0;
-    return {
-      next: () => {
-        if (index < allItems.length) {
-          return { value: allItems[index++], done: false };
-        } else {
-          return { done: true };
-        }
-      }
-    };
-  }
+  return result;
 }
 
-const data = {
-  messages: ["Новий коментар", "Відповідь на ваш пост"],
-  alerts: ["Системне оновлення", "Попередження про безпеку"],
-  updates: ["Новий розділ у курсі", "Змінено розклад занять"]
-};
-
-const notifications = new Notifications(data);
-
-for (const notification of notifications) {
-  console.log(notification);
-}
-//Zad 2
-function sqr(x, cache) {
-    if (cache.has(x)) {
-        return cache.get(x);
-    }
-    const square = x * x;
-    cache.set(x, square);
-    return square;
-}
-
-const cache = new Map();
-console.log(sqr(4, cache));
-console.log(sqr(4, cache)); 
-console.log(sqr(5, cache)); 
-// Homework 11
-//Zad 1
-function logArguments(fn) {
-    return function(...args) {
-      console.log("Arguments:", args);
-        return fn(...args);
-    };
-}
-
-function add(a, b) {
-    return a + b;
-}
-const loggedAdd = logArguments(add);
-console.log(loggedAdd(3, 5));
-
-function greet(name, age) {
-    return `Hello, my name is ${name} and I am ${age} years old.`;
-};
-
-const loggedGreet = logArguments(greet);
-console.log(loggedGreet("Kostiantyn", 20));
-//Zad 2
-function validate(sum, validator) {
-    return function(...args) {
-        if (!args.every(validator)) {
-            throw new Error("Validation failed: some arguments do not meet the criteria.");
-        }
-        return sum(...args);
-    };
-}
-
-function add(a, b) {
-    return a + b;
-}
-
-const isPositive = (num) => num > 0;
-const validatedAdd = validate(add, isPositive);
-
-console.log(validatedAdd(3, 5)); 
-console.log(validatedAdd(-1, 5));
+console.log(permute([1, 2, 3]));
