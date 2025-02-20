@@ -1,108 +1,96 @@
-// Homework 14
-class Student {
-  constructor(firstName, lastName, birthYear) {
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.birthYear = birthYear;
-      this.courses = new Map();
-  }
+// Homework 15
+class Todo {
+    constructor(title) {
+        if (!title.trim()) {
+            throw new Error("Нотатка не може бути порожньою");
+        }
+        this.title = title;
+        this.completed = false;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    }
 
-  addCourse(course) {
-      if (!this.courses.has(course)) {
-          this.courses.set(course, { grades: [], attendance: [] });
-      }
-  }
+    editTitle(newTitle) {
+        if (!newTitle.trim()) {
+            throw new Error("Нотатка не може бути порожньою");
+        }
+        this.title = newTitle;
+        this.updatedAt = new Date();
+    }
 
-  removeCourse(course) {
-      this.courses.delete(course);
-  }
-
-  addGrade(course, grade) {
-      if (this.courses.has(course) && grade >= 0 && grade <= 100) {
-          this.courses.get(course).grades.push(grade);
-      } else {
-          console.log("Невірні дані або курс не знайдено.");
-      }
-  }
-
-  addAttendance(course, attended) {
-      if (this.courses.has(course) && typeof attended === "boolean") {
-          this.courses.get(course).attendance.push(attended);
-      } else {
-          console.log("Невірні дані або курс не знайдено.");
-      }
-  }
-
-  getAverageGrade(course) {
-      if (!this.courses.has(course) || this.courses.get(course).grades.length === 0) return 0;
-      const sum = this.courses.get(course).grades.reduce((acc, val) => acc + val, 0);
-      return sum / this.courses.get(course).grades.length;
-  }
-
-  getAverageAttendance(course) {
-      if (!this.courses.has(course) || this.courses.get(course).attendance.length === 0) return 0;
-      const attendedClasses = this.courses.get(course).attendance.filter(a => a).length;
-      return attendedClasses / this.courses.get(course).attendance.length;
-  }
-
-  getCompletedClasses(course) {
-      return this.courses.has(course) ? this.courses.get(course).attendance.length : 0;
-  }
-
-  getStudentInfo() {
-      let info = `Студент: ${this.firstName} ${this.lastName}\nРік народження: ${this.birthYear}\nКурси:\n`;
-      this.courses.forEach((data, course) => {
-          info += `  ${course}: Середня оцінка: ${this.getAverageGrade(course).toFixed(2)}, Середнє відвідування: ${(this.getAverageAttendance(course) * 100).toFixed(2)}%, Пройдені заняття: ${this.getCompletedClasses(course)}\n`;
-      });
-      return info;
-  }
+    markAsCompleted() {
+        this.completed = true;
+        this.updatedAt = new Date();
+    }
 }
 
-class Group {
-  constructor() {
-      this.students = [];
-  }
+class TodoList {
+    constructor() {
+        this.todos = [];
+    }
 
-  addStudent(student) {
-      this.students.push(student);
-  }
+    addTodo(title) {
+        const todo = new Todo(title);
+        this.todos.push(todo);
+    }
 
-  removeStudent(student) {
-      this.students = this.students.filter(s => s !== student);
-  }
+    removeTodo(title) {
+        this.todos = this.todos.filter(todo => todo.title !== title);
+    }
 
-  getStudentRankingByGrade(course) {
-      return this.students
-          .map(student => ({ student, averageGrade: student.getAverageGrade(course) }))
-          .sort((a, b) => b.averageGrade - a.averageGrade);
-  }
+    editTodo(oldTitle, newTitle) {
+        const todo = this.todos.find(todo => todo.title === oldTitle);
+        if (todo) {
+            todo.editTitle(newTitle);
+        }
+    }
 
-  getStudentRankingByAttendance(course) {
-      return this.students
-          .map(student => ({ student, averageAttendance: student.getAverageAttendance(course) }))
-          .sort((a, b) => b.averageAttendance - a.averageAttendance);
-  }
+    getTodo(title) {
+        return this.todos.find(todo => todo.title === title);
+    }
+
+    getAllTodos() {
+        return this.todos;
+    }
+
+    getCompletedTodos() {
+        return this.todos.filter(todo => todo.completed);
+    }
+
+    getPendingTodos() {
+        return this.todos.filter(todo => !todo.completed);
+    }
+
+    getStats() {
+        return {
+            total: this.todos.length,
+            completed: this.getCompletedTodos().length,
+            pending: this.getPendingTodos().length
+        };
+    }
+
+    searchByTitle(searchTerm) {
+        return this.todos.filter(todo => todo.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+
+    sortByStatus(descending = true) {
+        return [...this.todos].sort((a, b) => {
+            return descending ? b.completed - a.completed : a.completed - b.completed;
+        });
+    }
+
+    sortByDate(descending = true) {
+        return [...this.todos].sort((a, b) => {
+            return descending ? b.createdAt - a.createdAt : a.createdAt - b.createdAt;
+        });
+    }
 }
 
-const student1 = new Student("Іван", "Петренко", 2002);
-const student2 = new Student("Марія", "Іваненко", 2003);
-
-student1.addCourse("Математика");
-student1.addGrade("Математика", 85);
-student1.addGrade("Математика", 90);
-student1.addAttendance("Математика", true);
-student1.addAttendance("Математика", false);
-
-student2.addCourse("Математика");
-student2.addGrade("Математика", 92);
-student2.addGrade("Математика", 88);
-student2.addAttendance("Математика", true);
-student2.addAttendance("Математика", true);
-
-const group = new Group();
-group.addStudent(student1);
-group.addStudent(student2);
-
-console.log(student1.getStudentInfo());
-console.log(group.getStudentRankingByGrade("Математика"));
-console.log(group.getStudentRankingByAttendance("Математика"));
+const myTodoList = new TodoList();
+myTodoList.addTodo("Купити молоко");
+myTodoList.addTodo("Зробити домашнє завдання");
+myTodoList.addTodo("Піти в спортзал");
+myTodoList.getTodo("Купити молоко").markAsCompleted();
+console.log(myTodoList.getStats());
+console.log(myTodoList.sortByStatus());
+console.log(myTodoList.sortByDate());
