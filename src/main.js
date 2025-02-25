@@ -94,3 +94,57 @@ myTodoList.getTodo("Купити молоко").markAsCompleted();
 console.log(myTodoList.getStats());
 console.log(myTodoList.sortByStatus());
 console.log(myTodoList.sortByDate());
+
+//Homework 17
+//Zad1 
+function randomDelayPrint(message) {
+    message.split('').forEach((char, index) => {
+        setTimeout(() => {
+            console.log(char);
+        }, Math.random() * 1000);
+    });
+}
+randomDelayPrint("Hello");
+
+//Zad2
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
+    };
+}
+
+const expensiveOperation = () => console.log("Виконую складну операцію...");
+const debouncedExpensiveOperation = debounce(expensiveOperation, 1000);
+
+debouncedExpensiveOperation();
+debouncedExpensiveOperation();
+debouncedExpensiveOperation();
+
+// Zad 3
+function intervalRace(functions, t) {
+    return new Promise((resolve) => {
+        let results = [];
+        let index = 0;
+
+        function executeNext() {
+            if (index < functions.length) {
+                results.push(functions[index]());
+                index++;
+                setTimeout(executeNext, t);
+            } else {
+                resolve(results);
+            }
+        }
+        executeNext();
+    });
+}
+
+const func1 = () => "Функція 1 виконана";
+const func2 = () => "Функція 2 виконана";
+const func3 = () => "Функція 3 виконана";
+
+intervalRace([func1, func2, func3], 1000).then(console.log);
